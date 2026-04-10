@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
  */
 @Entity //decorador
 @Table(name = "libros")
-public class Libro {
+public class Libroparte2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,10 +36,10 @@ public class Libro {
     private String autor;
 
     // Constructor sin argumentos (requerido por JPA/Hibernate)
-    public Libro() {}
+    public Libroparte2() {}
 
     // Constructor completo
-    public Libro(int id, String isbn, String titulo, String editorial, int fechaPublicacion,
+    public Libroparte2(int id, String isbn, String titulo, String editorial, int fechaPublicacion,
             String autor) {
         this.id = id;
         this.isbn = isbn;
