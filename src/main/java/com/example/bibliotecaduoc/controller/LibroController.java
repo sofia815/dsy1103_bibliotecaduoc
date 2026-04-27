@@ -18,7 +18,9 @@ import com.example.bibliotecaduoc.mapper.LibroMapper;
 import com.example.bibliotecaduoc.model.Libro;
 import com.example.bibliotecaduoc.service.LibroService;
 import jakarta.validation.Valid;
-
+import org.springframework.web.reactive.function.client.WebClient;
+import com.example.bibliotecaduoc.dto.PokemonResponse;
+import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Controller REST modernizado para Java 21 LTS y Spring Boot 3.3+ 100% REST compliant
  */
@@ -27,10 +29,12 @@ import jakarta.validation.Valid;
 public class LibroController {
 
         private final LibroService libroService;
+        private final WebClient pokeApiWebClient;
 
         // Constructor injection (mejor práctica 2026)
-        public LibroController(LibroService libroService) {
+        public LibroController(LibroService libroService, WebClient pokeApiWebClient) {
                 this.libroService = libroService;
+                this.pokeApiWebClient = pokeApiWebClient;
         }
 
         @GetMapping
@@ -78,5 +82,23 @@ public class LibroController {
         public ResponseEntity<Integer> totalLibros() {
                 int total = libroService.totalLibrosV2();
                 return ResponseEntity.ok(total);
+        }
+        @GetMapping("/editorial/{editorial}")
+        public List<Libro>getporEditorial(@PathVariable String editorial) {
+                return libroService.obtenerPorEditorial(editorial);
+        }
+        @GetMapping("/editorial")
+        public List<Libro>getporEditorial2(@RequestParam String editorial) {
+                return libroService.obtenerPorEditorial(editorial);
+        }
+         @GetMapping("/pokeapi")
+        public ResponseEntity<PokemonResponse> consultarPokemon(
+                        @RequestParam(name = "nombre") String nombre) {
+
+                PokemonResponse pokemon = pokeApiWebClient.get()
+                                .uri("/pokemon-species/{nombre}", nombre) // Endpoint más simple
+                                .retrieve().bodyToMono(PokemonResponse.class).block();
+
+                return ResponseEntity.ok(pokemon);
         }
 }
